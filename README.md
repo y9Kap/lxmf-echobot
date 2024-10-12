@@ -5,6 +5,13 @@ A simple [LXMF](https://github.com/markqvist/LXMF/) echo bot for [Reticulum](htt
 ## How to use it?
 
 ```
+# clone project
+git clone https://github.com/liamcottle/lxmf-echobot
+
+# install python deps
+cd lxmf-echobot
 pip install -r requirements.txt
+
+# run echo bot
 python3 echobot.py --identity-file echobot_identity --display-name "Echo Bot"
 ```
