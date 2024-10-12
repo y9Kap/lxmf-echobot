@@ -1,0 +1,15 @@
+[Unit]
+Description=lxmf-echobot
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=liamcottle
+WorkingDirectory=/home/liamcottle/lxmf-echobot
+ExecStart=/usr/bin/python3 echobot.py --identity-file echobot_identity --display-name "Liam's Echo Bot" --announce-interval-seconds 3600
+
+[Install]
+WantedBy=multi-user.target
