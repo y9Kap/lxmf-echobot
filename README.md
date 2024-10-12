@@ -15,3 +15,5 @@ pip install -r requirements.txt
 # run echo bot and auto announce every hour
 python3 echobot.py --identity-file echobot_identity --display-name "Echo Bot" --announce-interval-seconds 3600
 ```
+
+> NOTE: Make sure to configure your RNS interfaces in `~/.reticulum/config` so the Echo Bot is reachable.
