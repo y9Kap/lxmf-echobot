@@ -10,13 +10,16 @@ import RNS
 
 class EchoBot:
 
-    def __init__(self, identity: RNS.Identity, display_name: str, announce_interval_seconds: int | None = None):
+    def __init__(self, identity: RNS.Identity, display_name: str, announce_interval_seconds: int | None = None, max_outbound_stamp_cost: int | None = None):
 
         # remember variables
         self.identity = identity
         self.display_name = display_name
         self.path_lookup_timeout_seconds = 15
         self.announce_interval_seconds = announce_interval_seconds
+        self.max_outbound_stamp_cost = max_outbound_stamp_cost
+
+        # remember last announced at
         self.last_announced_at = None
 
         # init rns
@@ -112,7 +115,15 @@ class EchoBot:
         # create destination for recipients lxmf delivery address
         lxmf_destination = RNS.Destination(destination_identity, RNS.Destination.OUT, RNS.Destination.SINGLE, "lxmf", "delivery")
 
-        # todo check the stamp cost to message the user, if no ticket available, and cost is very high, don't reply to prevent cpu death
+        # if configured, and we don't have an lxmf ticket, don't reply to messages if the recipients stamp cost is higher than the allowed outbound stamp cost
+        # this should prevent users from killing the echo bot's server cpu by messaging it with an insanely high stamp cost
+        if self.max_outbound_stamp_cost is not None and self.message_router.get_outbound_ticket(destination_hash) is None:
+
+            # check if recipients stamp cost is higher than configured maximum
+            outbound_stamp_cost = self.message_router.get_outbound_stamp_cost(destination_hash)
+            if outbound_stamp_cost is not None and outbound_stamp_cost > self.max_outbound_stamp_cost:
+                print(f"Not replying to {destination_hash.hex()} as their stamp cost of {outbound_stamp_cost} is higher than max outbound stamp cost of {self.max_outbound_stamp_cost}")
+                return
 
         # send messages over a direct link by default
         desired_delivery_method = LXMF.LXMessage.DIRECT
@@ -158,6 +169,7 @@ if __name__ == "__main__":
     parser.add_argument("--identity-file", type=str, help="Path to a Reticulum Identity file to use as the LXMF address.", required=True)
     parser.add_argument("--display-name", type=str, help="The display name to send in announces.", required=True)
     parser.add_argument("--announce-interval-seconds", type=int, help="How often the EchoBot should announce.")
+    parser.add_argument("--max-outbound-stamp-cost", type=int, help="Replies will not be sent if the recipients stamp cost is higher than this value.")
     args = parser.parse_args()
 
     # if identity file does not exist, generate a new identity and save it
@@ -177,6 +189,7 @@ if __name__ == "__main__":
         identity=identity,
         display_name=args.display_name,
         announce_interval_seconds=args.announce_interval_seconds,
+        max_outbound_stamp_cost=args.max_outbound_stamp_cost,
     )
 
     # loop forever to prevent script exiting immediately
