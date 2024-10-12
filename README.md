@@ -1,6 +1,6 @@
 # LXMF Echo Bot
 
-A simple LXMF echo bot for Reticulum.
+A simple [LXMF](https://github.com/markqvist/LXMF/) echo bot for [Reticulum](https://github.com/markqvist/Reticulum/).
 
 ## How to use it?
 
