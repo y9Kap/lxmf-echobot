@@ -114,6 +114,16 @@ class EchoBot:
 
         # todo check the stamp cost to message the user, if no ticket available, and cost is very high, don't reply to prevent cpu death
 
+        # send messages over a direct link by default
+        desired_delivery_method = LXMF.LXMessage.DIRECT
+        if not self.message_router.delivery_link_available(destination_hash) and RNS.Identity.current_ratchet_id(destination_hash) != None:
+
+            # since there's no link established to the destination, it's faster to send opportunistically
+            # this is because it takes several packets to establish a link, and then we still have to send the message over it
+            # oppotunistic mode will send the message in a single packet (if the message is small enough, otherwise it falls back to a direct link)
+            # we will only do this if an encryption ratchet is available, so single packet delivery is more secure
+            desired_delivery_method = LXMF.LXMessage.OPPORTUNISTIC
+
         # create a new lxmf message to the user that messaged us with the same content they sent us
         lxmf_message_reply = LXMF.LXMessage(
             destination=lxmf_destination, # send our message to the user that messaged us
@@ -121,7 +131,7 @@ class EchoBot:
             title=lxmf_message.title, # send the received title back
             content=lxmf_message.content, # send the received content back
             fields=lxmf_message.fields, # send the received fields back
-            desired_method=lxmf_message.method, # use the same method to reply that was used to message us
+            desired_method=desired_delivery_method,
         )
 
         # listen for success or failure for sending message
