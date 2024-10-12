@@ -143,7 +143,7 @@ class EchoBot:
 if __name__ == "__main__":
 
     # parse command line args
-    parser = argparse.ArgumentParser(description="Liam's LXMF Echo Bot")
+    parser = argparse.ArgumentParser(description="Liam Cottle's LXMF Echo Bot")
     parser.add_argument("--identity-file", type=str, help="Path to a Reticulum Identity file to use as the LXMF address.", required=True)
     parser.add_argument("--display-name", type=str, help="The display name to send in announces.", required=True)
     parser.add_argument("--announce-interval-seconds", type=int, help="How often the EchoBot should announce.")
