@@ -131,7 +131,8 @@ class EchoBot:
             title=lxmf_message.title, # send the received title back
             content=lxmf_message.content, # send the received content back
             fields=lxmf_message.fields, # send the received fields back
-            desired_method=desired_delivery_method,
+            # fixme: it would be nice to use the same method we received via, but we would need to set a propagation node address
+            desired_method=desired_delivery_method, # for now, sends via direct link or opportunistically
         )
 
         # listen for success or failure for sending message
