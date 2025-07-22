@@ -23,7 +23,7 @@ class EchoBot:
         self.last_announced_at = None
 
         # init rns
-        self.reticulum = RNS.Reticulum()
+        self.reticulum = RNS.Reticulum(configdir="C:\\Users\\y9Kap\\.reticulum")
 
         # init lxmf router
         self.message_router = LXMF.LXMRouter(identity=self.identity, storagepath="./lxmf_storage")
@@ -140,7 +140,7 @@ class EchoBot:
             destination=lxmf_destination, # send our message to the user that messaged us
             source=self.local_lxmf_destination, # we are the source of this message
             title=lxmf_message.title, # send the received title back
-            content=lxmf_message.content, # send the received content back
+            content=f"Content: {lxmf_message.content_as_string()}" + "\n \n" + f"With received RSSI: {lxmf_message.rssi}" + f", SNR: {lxmf_message.snr}", # send the received content back
             fields=lxmf_message.fields, # send the received fields back
             # fixme: it would be nice to use the same method we received via, but we would need to set a propagation node address
             desired_method=desired_delivery_method, # for now, sends via direct link or opportunistically
