@@ -71,38 +71,6 @@ class EchoBot:
 
         return list(nodes.values())
 
-    def format_mesh_info(self, stats: dict) -> str:
-        lines = ["📡 **Mesh Network Status**", ""]
-
-        for iface in stats.get("interfaces", []):
-            lines.append(f"🔹 Interface: {iface['short_name']} ({iface['type']})")
-            lines.append(f"   ├ Status: {'🟢 Online' if iface['status'] else '🔴 Offline'}")
-            lines.append(f"   ├ Mode: {iface['mode']}")
-            lines.append(f"   ├ RX bytes: {iface['rxb']}  |  TX bytes: {iface['txb']}")
-            lines.append(f"   ├ RX speed: {iface['rxs']:.2f} B/s  |  TX speed: {iface['txs']:.2f} B/s")
-            if iface.get("bitrate"):
-                lines.append(f"   ├ Bitrate: {iface['bitrate']:.2f} bps")
-            if iface.get("noise_floor") is not None:
-                lines.append(f"   ├ Noise floor: {iface['noise_floor']} dBm")
-            if iface.get("battery_percent") is not None:
-                lines.append(f"   ├ Battery: {iface['battery_percent']}%")
-            if iface.get("airtime_short") is not None:
-                lines.append(f"   ├ Airtime (short): {iface['airtime_short']:.2f}%")
-            if iface.get("airtime_long") is not None:
-                lines.append(f"   ├ Airtime (long): {iface['airtime_long']:.2f}%")
-            lines.append(f"   └ Peers: {iface['peers']}")
-            lines.append("")
-
-        lines.append("🌐 **Transport Statistics:**")
-        lines.append(f"   ├ Known nodes: {stats.get('known_nodes', 0)}")
-        lines.append(f"   ├ Total RX bytes: {stats.get('total_rx_bytes', 0)}")
-        lines.append(f"   ├ Total TX bytes: {stats.get('total_tx_bytes', 0)}")
-        lines.append(f"   ├ RX speed: {stats.get('rx_speed', 0.0):.2f} B/s")
-        lines.append(f"   ├ TX speed: {stats.get('tx_speed', 0.0):.2f} B/s")
-        lines.append(f"   └ Uptime: {stats.get('transport_uptime', 0.0):.1f} s")
-
-        return "\n".join(lines)
-
     def on_lxmf_message_received(self, lxmf_message: LXMF.LXMessage):
         destination_hash = lxmf_message.source_hash
         print(f"📨 Received message from {destination_hash.hex()}: {lxmf_message.content_as_string()}")
@@ -135,7 +103,7 @@ class EchoBot:
             f"Echo reply from echo bot\n"
             f"\n"
             f"Received RSSI: {lxmf_message.rssi}, SNR: {lxmf_message.snr}\n\n"
-            f"Content: {lxmf_message.content_as_string()}\n\n"
+            f"Content: {lxmf_message.content_as_string()}\n"
         )
 
         lxmf_message_reply = LXMF.LXMessage(
