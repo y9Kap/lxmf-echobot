@@ -99,12 +99,10 @@ class EchoBot:
         if not self.message_router.delivery_link_available(destination_hash) and RNS.Identity.current_ratchet_id(destination_hash) is not None:
             desired_delivery_method = LXMF.LXMessage.OPPORTUNISTIC
 
-        reply_text = (
-            f"Echo reply from echo bot\n"
-            f"\n"
-            f"Received RSSI: {lxmf_message.rssi}, SNR: {lxmf_message.snr}\n\n"
-            f"Content: {lxmf_message.content_as_string()}\n"
-        )
+        reply_text = "Reply from echo bot\n\n"
+        if lxmf_message.rssi is not None and lxmf_message.snr is not None:
+            reply_text += f"Received RSSI: {lxmf_message.rssi}, SNR: {lxmf_message.snr}\n\n"
+        reply_text += f"Content: {lxmf_message.content_as_string()}\n"
 
         lxmf_message_reply = LXMF.LXMessage(
             destination=lxmf_destination,
